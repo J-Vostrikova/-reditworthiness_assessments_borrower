@@ -55,3 +55,14 @@ class DecisionDatabase:
     def close(self):
         """Закрытие соединения с базой данных"""
         self.conn.close()
+
+# Миграция на PostgreSQL (Задача 3.2)
+class Database:
+    def __init__(self):
+        self.engine = create_engine('postgresql://user:pass@localhost:5432/credits')  # Новый движок БД
+
+    def migrate_from_sqlite(self, sqlite_path):
+        """Перенос данных из старой БД"""
+        old_db = sqlite3.connect(sqlite_path)
+        old_data = pd.read_sql('SELECT * FROM decisions', old_db)
+        old_data.to_sql('decisions', self.engine, if_exists='replace')

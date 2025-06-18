@@ -98,3 +98,13 @@ class CreditScoringModel:
         """Загрузка модели"""
         self.model = keras.models.load_model(path)
         return self.model
+
+# Оптимизация памяти (Задача 1.1)
+def train(self, X_train, y_train):
+    """Обучение модели с контролем памяти"""
+    try:
+        self.model.fit(X_train, y_train, 
+                      batch_size=32,  # Уменьшение размера батча
+                      callbacks=[keras.callbacks.TerminateOnNaN()])  # Защита от переполнения
+    except Exception as e:
+        logging.critical(f"Ошибка обучения: {str(e)}")

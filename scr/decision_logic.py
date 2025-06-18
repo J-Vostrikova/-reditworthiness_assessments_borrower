@@ -45,3 +45,13 @@ class DecisionMaker:
         """
         probabilities = model.predict(X)
         return DecisionMaker.generate_recommendations(probabilities)
+
+# Добавление поддержки форматов (Задача 2.2)
+def load_data(self, file):
+    """Загрузка данных разных форматов"""
+    if file.endswith('.csv'):
+        return pd.read_csv(file)
+    elif file.endswith('.json'):
+        return pd.read_json(file)
+    else:
+        raise ValueError("Unsupported format")

@@ -66,12 +66,20 @@ class DataProcessor:
         self.preprocessor = joblib.load(path)
         return self.preprocessor
 
-# Добавить обработку пропущенных данных (Задача 1.1)
-def handle_missing_values(data):
-       try:
-        data.fillna(data.mean(), inplace=True)  # Для числовых
-        data.fillna(data.mode().iloc[0], inplace=True)  # Для категориальных
-        return data
-    except Exception as e:
-        logging.error(f"Ошибка обработки данных: {str(e)}")  # Логгирование (Задача 1.2)
-        raise
+    # Добавить обработку пропущенных данных (Задача 1.1)
+    def handle_missing_values(data):
+           try:
+            data.fillna(data.mean(), inplace=True)  # Для числовых
+            data.fillna(data.mode().iloc[0], inplace=True)  # Для категориальных
+            return data
+        except Exception as e:
+            logging.error(f"Ошибка обработки данных: {str(e)}")  # Логгирование (Задача 1.2)
+            raise
+    def load_data(self, file: str) -> pd.DataFrame:
+        """Универсальный загрузчик (разрешение конфликта)"""
+        if file.endswith('.csv'):
+            return pd.read_csv(file)
+        elif file.endswith('.json'):
+            return pd.read_json(file)
+        else:
+            raise ValueError("Unsupported format")    

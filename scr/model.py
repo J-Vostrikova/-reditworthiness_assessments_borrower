@@ -99,12 +99,34 @@ class CreditScoringModel:
         self.model = keras.models.load_model(path)
         return self.model
 
-# Оптимизация памяти (Задача 1.1)
-def train(self, X_train, y_train):
-    """Обучение модели с контролем памяти"""
-    try:
-        self.model.fit(X_train, y_train, 
-                      batch_size=32,  # Уменьшение размера батча
-                      callbacks=[keras.callbacks.TerminateOnNaN()])  # Защита от переполнения
-    except Exception as e:
-        logging.critical(f"Ошибка обучения: {str(e)}")
+    # Оптимизация памяти (Задача 1.1)
+    def train(self, X_train, y_train):
+        """Обучение модели с контролем памяти"""
+        try:
+            self.model.fit(X_train, y_train, 
+                          batch_size=32,  # Уменьшение размера батча
+                          callbacks=[keras.callbacks.TerminateOnNaN()])  # Защита от переполнения
+        except Exception as e:
+            logging.critical(f"Ошибка обучения: {str(e)}")
+class CreditModel:
+    def __init__(self):
+    self.model = self._build_model()
+
+    def _build_model(self):
+    model = keras.Sequential([
+        keras.layers.Dense(128, activation='relu'),
+        keras.layers.Dense(1, activation='sigmoid')
+    ])
+    model.compile(optimizer='adam', loss='binary_crossentropy')
+    return model
+
+    def train(self, X_train, y_train):
+    """Обучение с контролем ресурсов"""
+    self.model.fit(
+        X_train, y_train,
+        batch_size=32,
+        callbacks=[
+            keras.callbacks.TerminateOnNaN(),
+            keras.callbacks.ModelCheckpoint('backup.h5')
+        ]
+    )
